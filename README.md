@@ -1,1 +1,1 @@
-# way_to_sdet
+Мой путь к профессии SDET python + Vibe - coding в помощь к тестированию.
