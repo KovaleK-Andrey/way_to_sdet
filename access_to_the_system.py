@@ -1,6 +1,6 @@
-user_role = input('Введите вашу роль: ')
+user_role = input('Введите вашу роль: ').lower()
 user_experience = int(input('Введите ваш стаж: '))
-user_has_pass = input('Есть ли у вас пропуск? ')
+user_has_pass = input('Есть ли у вас пропуск? ').lower()
 
 
 if user_has_pass == 'no':
@@ -14,4 +14,4 @@ elif user_role == 'manager' and user_experience < 2:
 elif user_role == 'admin':
     print('Доступ разрешён: администратор')
 else:
-    print('Доступ разрешен')
+    print('Доступ разрешён')
