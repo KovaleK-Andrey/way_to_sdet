@@ -36,7 +36,6 @@ test_data = {
     "": "Номер пустой"
 }
 
-
 for phone, expected in test_data.items():
     result = validate_phone(phone)
 
