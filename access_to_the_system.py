@@ -1,10 +1,18 @@
 
 
-def access_to_system(role: str, experience: int, has_pass: str):
+def access_to_system(role: str, experience: str, has_pass: str):
     if not role:
         return 'Роль должна быть заполнена'
-    if experience is None:
+    if not experience.strip():
         return 'Опыт должен быть заполнен'
+
+    try:
+        experience = int(experience)
+    except ValueError:
+        return 'Опыт должен быть числом'
+
+    if experience < 0:
+        return 'Опыт не может быть отрицательным'
 
     role = role.strip().lower()
     has_pass = has_pass.strip().lower()
@@ -29,4 +37,4 @@ def access_to_system(role: str, experience: int, has_pass: str):
     if role == 'admin':
         return 'Доступ разрешён: администратор'
 
-    return 'Доступ разрешен'
+    return 'Доступ разрешён'
