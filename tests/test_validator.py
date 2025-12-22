@@ -1,5 +1,5 @@
 import pytest
-from validators import validate_phone
+from validators import validate_phone, PhoneValidationError
 
 
 @pytest.fixture(params=[
@@ -29,11 +29,14 @@ def invalid_phone(request):
     return request.param
 
 
-def test_validate_phone_valid_cases(invalid_phone):
-    phone, expected = invalid_phone
-    assert validate_phone(phone) == expected
-
-
-def test_validate_phone_no_valid_cases(valid_phone):
+def test_validate_phone_valid_cases(valid_phone):
     phone, expected = valid_phone
     assert validate_phone(phone) == expected
+
+
+def test_validate_phone_no_valid_cases(invalid_phone):
+    phone, expected = invalid_phone
+
+    with pytest.raises(PhoneValidationError) as exc:
+        validate_phone(phone)
+    assert str(exc.value) == expected
