@@ -1,38 +1,64 @@
 import requests
 
 
-def test_get_posts_status_code():
-    response = requests.get('https://jsonplaceholder.typicode.com/posts')
-
-    assert response.status_code == 200
+BASE_URL = 'https://jsonplaceholder.typicode.com'
 
 
-def test_get_posts_response_body():
-    response = requests.get('https://jsonplaceholder.typicode.com/posts')
+def test_create_post():
+    payload = {
+        'title': 'Test title',
+        'body': 'Test body',
+        'userId': 1
+    }
+
+    response = requests.post(
+        f'{BASE_URL}/posts',
+            json=payload
+    )
+
+    assert response.status_code == 201
+
     data = response.json()
 
-    assert isinstance(data, list)
-    assert len(data) > 0
-
-    post = data[0]
-    assert 'userId' in post
-    assert 'id' in post
-    assert 'title' in post
-    assert 'body' in post
+    assert data['title'] == payload['title']
+    assert data['body'] == payload['body']
+    assert data['userId'] == payload['userId']
+    assert 'id' in data
 
 
-def test_get_single_post():
-    post_id = 1
-    response = requests.get(
-        f'https://jsonplaceholder.typicode.com/posts/{post_id}')
+def test_create_post_content_type():
+    response = requests.post(f'{BASE_URL}/posts',
+                                json={'title': 'Test',
+                                   'body': 'Body',
+                                   'userId': 1})
+
+    assert response.headers['Content-Type'].startswith('application/json')
+
+
+def test_create_post_with_empty_body():
+    response = requests.post(f'{BASE_URL}/posts',
+                             json={})
+
+    assert response.status_code == 201
+
+
+def test_update_post():
+    payload = {
+        'id': 1,
+        'title': 'Update title',
+        'body': 'Update body',
+        'userId': 1
+    }
+
+    response = requests.put(f'{BASE_URL}/posts/1',
+                            json=payload)
 
     assert response.status_code == 200
+    data = response.json()
+    assert data['title'] == payload['title']
 
-    post = response.json()
-    assert post['id'] == post_id
 
+def test_delete_post():
+    response = requests.delete(f'{BASE_URL}/posts/1')
 
-def test_get_nonexistent_post():
-    response = requests.get('https://jsonplaceholder.typicode.com/posts/999999')
-
-    assert response.status_code == 404
+    assert response.status_code == 200
