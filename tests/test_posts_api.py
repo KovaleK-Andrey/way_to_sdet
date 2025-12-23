@@ -1,76 +1,53 @@
 
 
-def test_get_posts(api_client):
-    response = api_client.get(f'{api_client.base_url}/posts')
-    data = response.json()
+def test_get_posts(posts_client):
+    posts = posts_client.get_posts()
 
-    assert response.status_code == 200
-    assert len(data) > 0
-    assert isinstance(data, list)
+    assert len(posts) > 0
+    assert isinstance(posts, list)
 
-    post = data[0]
-
-    assert 'userId' in post
-    assert 'id' in post
-    assert 'title' in post
-    assert 'body' in post
+    data = posts[0]
+    assert 'userId' in data
+    assert 'id' in data
+    assert 'title' in data
+    assert 'body' in data
 
 
-def test_create_post(api_client):
-    payload = {
-        'title': 'Test title',
-        'body': 'Test body',
-        'userId': 1
-    }
-
-    response = api_client.post(
-        f'{api_client.base_url}/posts',
-            json=payload
+def test_create_post(posts_client):
+    post = posts_client.create_post(
+        title='Test title',
+        body='Test body',
+        user_id=1,
     )
 
-    assert response.status_code == 201
-
-    data = response.json()
-
-    assert data['title'] == payload['title']
-    assert data['body'] == payload['body']
-    assert data['userId'] == payload['userId']
-    assert 'id' in data
+    assert post['id'] is not None
+    assert post['body'] == 'Test body'
+    assert post['title'] == 'Test title'
 
 
 def test_create_post_content_type(api_client):
-    response = api_client.post(f'{api_client.base_url}/posts',
-                                json={'title': 'Test',
-                                   'body': 'Body',
-                                   'userId': 1})
+    response = api_client.post('/posts')
 
     assert response.headers['Content-Type'].startswith('application/json')
 
 
 def test_create_post_with_empty_body(api_client):
-    response = api_client.post(f'{api_client.base_url}/posts',
-                             json={})
+    response = api_client.post('/posts')
 
     assert response.status_code == 201
 
 
-def test_update_post(api_client):
-    payload = {
-        'id': 1,
-        'title': 'Update title',
-        'body': 'Update body',
-        'userId': 1
-    }
+def test_update_post(posts_client):
+    posts = posts_client.update_post(
+        post_id=1,
+        title='Updated',
+        body='Updated body')
 
-    response = api_client.put(f'{api_client.base_url}/posts/1',
-                            json=payload)
-
-    assert response.status_code == 200
-    data = response.json()
-    assert data['title'] == payload['title']
+    assert posts['title'] == 'Updated'
+    assert posts['body'] == 'Updated body'
 
 
-def test_delete_post(api_client):
-    response = api_client.delete(f'{api_client.base_url}/posts/1')
 
+def test_delete_post(posts_client):
+    response = posts_client.delete_post(post_id=1)
     assert response.status_code == 200
