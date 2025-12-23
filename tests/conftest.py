@@ -1,14 +1,13 @@
 import pytest
-import requests
-
-BASE_URL = 'https://jsonplaceholder.typicode.com'
+from clients.base_client import BaseClient
+from clients.posts_client import PostsClient
 
 
 @pytest.fixture
 def api_client():
-    session = requests.Session()
-    session.headers.update({
-        'Content-Type': 'application/json'
-    })
-    session.base_url = BASE_URL
-    return session
+    return BaseClient(base_url='https://jsonplaceholder.typicode.com')
+
+
+@pytest.fixture
+def posts_client(api_client):
+    return PostsClient(api_client)
